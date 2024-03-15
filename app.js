@@ -5,6 +5,9 @@ const mongoose = require('mongoose');
 
 app.use(express.json());
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger');
+
 mongoose.connect(process.env.MONGODB_URI)
   .then(
     () => { console.log('Connection established...')},
@@ -12,10 +15,11 @@ mongoose.connect(process.env.MONGODB_URI)
   );
 
 const user = require('./routes/user.route');
-const userProduct = require('./routes/user.products.routes')
-app.use('/api/users', user);
-app.use('/api/user-products', userProduct)
+const userProduct = require('./routes/user.products.routes');
 
+app.use('/api/users', user);
+app.use('/api/user-products', userProduct);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument.options));
 
 app.listen(port, () => {
 console.log('Server is up and running...');
